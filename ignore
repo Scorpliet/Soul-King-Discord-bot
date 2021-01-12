@@ -1,0 +1,24 @@
+#intents = discord.Intents.default()
+#intents.members = True
+#bot.remove_command('help')  #removed the default help function
+
+
+
+#@bot.command()
+#async def help(ctx):
+#    embed = discord.Embed(
+#       name="Help",
+#       value="help command",
+#      color=0xFFFFFF,
+#     title="Prefix is brook or .")
+
+# embed.add_field(name="command", value="command description")
+# embed.add_field(name="45", value="I will perform a  45 for you")
+
+#await ctx.send(embed=embed)
+
+
+@bot.command(name="cmd", description="A simple cmd")
+async def command(ctx):
+    await ctx.send(
+        'This command was successful!, plus you can greet me by saying hello brook')
