@@ -83,7 +83,7 @@ async def leaderboard(self, ctx,x = 10):
 
     total = sorted(leader_board, key=lambda l:l[1], reverse=True)    
     
-    em = discord.Embed(title = "Brook's Leaderboard" , description = "Globally",color = discord.Color(0xfa43ee))
+    em = discord.Embed(title = "Soul King's Leaderboard" , description = "Globally",color = discord.Color.gold())
     index = 1
     for p,v in total:
         id_ = leader_board[p, v]

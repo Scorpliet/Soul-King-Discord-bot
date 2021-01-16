@@ -2,10 +2,10 @@ import discord
 import random
 import asyncio
 
-async def tpose(array): #Transpose function i copied from internet
+def tpose(array): #Transpose function i copied from internet
         return [ [row[c] for row in array if c < len(row)] for c in range(0, max([len(row) for row in array])) ]
-
-async def join_list(list):
+      
+def join_list(list):
         result=''
         for elements in list:
           result +=str(elements)  
@@ -108,17 +108,16 @@ async def play(self, ctx):
                        await msg.delete()
             except asyncio.TimeoutError:
                  await ctx.send("Oops! There was no response")
-
+                 endgame=True
                  break
       
-      if col_options==[]:
+      if col_options==[] or endgame==True:
         break
               
 
-
+      alp2=tpose(alphabet)
       for i in col_options:
-              alp2=tpose(alphabet) #Transposed the array
-              alpha_tpose.append(alp2[i-1]) #added selected columns in new array
+            alpha_tpose.append(alp2[i-1]) #added selected columns in new array
     
       length_max_value = len(max(alpha_tpose, key=len))
       range_of_array = len(alpha_tpose)
@@ -151,13 +150,13 @@ async def play(self, ctx):
               except asyncio.TimeoutError:
                  await ctx.send("Oops! There was no response")
                  await embed2.delete()
+                 endgame=True
                  break      
-      if col_options==[]:
+      if col_options==[] or endgame==True:
         break
-    
+      alp3=tpose(alpha_tpose)
       for i in col_options:
-              alp3=tpose(alpha_tpose)
-              alpha_tpose2.append(alp3[i-1])
+            alpha_tpose2.append(alp3[i-1])
       
       col_options.clear()
       length_max_value2 = len(max(alpha_tpose2, key=len))

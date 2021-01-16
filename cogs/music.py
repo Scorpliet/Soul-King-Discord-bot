@@ -470,7 +470,7 @@ class Music(commands.Cog):
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction('🔀')
 
-    @commands.command(name='remove')
+    @commands.command(name='remove', aliases=["rem"])
     async def _remove(self, ctx: commands.Context, index: int):
         """Removes a song from the queue at a given index."""
 

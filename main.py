@@ -7,7 +7,7 @@ from itertools import cycle
 import os
 from keep_alive import keep_alive
 from random import randrange
-
+from embedss import help_em
 token = os.environ.get("TOKEN")
 # TO DOWNLOAD FFMPEG:
 # ctrl+shift+s
@@ -68,21 +68,14 @@ async def on_ready():
 text = "here"
 target = "https://github.com/Scorpliet/SoulKing/blob/main/README.md"
 
-link=(f"[{text}]({target})")
+
 @bot.event
 async def on_guild_join(guild):
-    em=discord.Embed(name="Help", title="Help", description="Prefix: brook help or .help \nTo get detailed help refer "+ link)
-    em.set_author(name="Brook") 
-    em.set_thumbnail(url="https://i.gifer.com/4BQA.gif")
-    em.add_field(name="Greetings", value="```hello brook, hello soulking```",inline=False)
-    em.add_field(name="Commands", value="```45, do(you + arg*, I + arg*, do a 45)```", inline=False)
-    em.add_field(name=":musical_note: Music", value="```join, summon, play, pause, resume, now, shuffle, remove, skip, queue stop, leave, loop, volume```", inline=False)
-    em.add_field(name=":game_die: Games", value="```wordguess```", inline=False)
-    em.set_footer(text="Type \"brook help command\" for more info on a command \nCreator: @scorpliet#5803")
+    helpem= help_em.helpem
     system_channel= guild.system_channel  
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
-            await system_channel.send(embed=em)
+            await system_channel.send(embed=helpem)
             #await channel.send('Hey there! Thank you for adding me!\nMy prefix is `~`\nStart by typing `~help`')
             break
 
@@ -98,7 +91,7 @@ async def on_message(message):
         return
     await bot.process_commands(message)  #This line makes sure on_message wont take priority over a command function
     pchance=randrange(8)
-    if message.content.startswith(("hello brook", "hello soul king", "hi brook", "hey brook")):
+    if message.content.startswith(("hello brook", "hello soulking", "hi brook", "hey brook")):
         randomliststart = [
             "Yohohoohoohoo! Hello, ", "Konnichiwa, ",
             "https://pa1.narvii.com/6280/3b9059c399eadd18056b566e13e34a364fda337e_hq.gif",
@@ -175,8 +168,10 @@ async def do(ctx, arg1, *args):
     pchance=randrange(8)
     message = await lastMessage(ctx, ctx.message.author.id)
     word = message.split()[1]
-
+    
     if arg1=="you" or arg1=="u":
+        if word=="are":
+            word="am"  
         response = [f"Oh yes! I {word} ", f"Yohohoho! I {word} ", f"I {word} "]
         randomres = random.choice(response)
         if randomres == response[2]:
@@ -215,7 +210,7 @@ async def trydoes(ctx, user: discord.Member, *args):
   message = await lastMessage(ctx, ctx.message.author.id)
   word = message.split()[1]
   try:
-     response=[f"{user.name} does ", f"{user.name} definitely {word} ", f"{user.name} {word}n't ", f"How should I know if {user.name} {word} ", f"Yes I saw {user.name} "]
+     response=[f"{user.name} {word} ", f"{user.name} definitely {word} ", f"{user.name} {word}n't ", f"How should I know if {user.name} {word} ", f"Yes I saw {user.name} "]
      await ctx.send(random.choice(response) + "{}".format(seperator.join(args)))
   except Exception:
      message = await lastMessage(ctx, ctx.message.author.id)
