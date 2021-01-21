@@ -14,4 +14,5 @@ discord = "^1.0"
 python = "^3.8"
 flask = "^1.1.2"
 youtube-dl = "^2021.1.8"
+jishaku = "^1.20.0"
 [tool.poetry.dev-dependencies]

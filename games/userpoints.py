@@ -1,6 +1,6 @@
 import json
 import discord
-
+import typing
 ranks = ["Recruit", "Initiate", "Novice", "Apprentice","Adept"]
 amount = [0,50,100,200,300,400]
   
@@ -69,10 +69,11 @@ async def addvalor(user, change=0, mode="valor"):
        users=json.dump(users, f)
     return user
 
-async def leaderboard(self, ctx,x = 10):
+async def leaderboard(self, ctx, mode: typing.Optional[str]="points", x = 10):
     users = await getpoints()
     leader_board = {}
     total = []
+    guild = ctx.guild
     for user in users:
         name = int(user)
         points_amount = users[user]["points"]
@@ -83,15 +84,16 @@ async def leaderboard(self, ctx,x = 10):
 
     total = sorted(leader_board, key=lambda l:l[1], reverse=True)    
     
-    em = discord.Embed(title = "Soul King's Leaderboard" , description = "Globally",color = discord.Color.gold())
+    em = discord.Embed(title = f"{guild} Leaderboard" , description = "`          Points   Valor   Rank`",color = discord.Color.gold())
+    
     index = 1
     for p,v in total:
         id_ = leader_board[p, v]
         member = self.bot.get_user(id_)
         name = member.name
-        em.add_field(name = f":blue_circle: {name}" , value = f"{rank}",  inline = True)
-        em.add_field(name = "Points", value = f'{p}', inline= True)
-        em.add_field(name="Valor", value= f'{v},({rank})', inline=True)
+        em.add_field(name = f":blue_circle: **{name}** - {p} {v} {rank}" , value = "\u200d",  inline = False)
+        #em.add_field(name = "Points", value = f'{p}', inline= True)
+        #em.add_field(name="Valor", value= f'{v},({rank})', inline=True)
         if index == x:
             break
         else:

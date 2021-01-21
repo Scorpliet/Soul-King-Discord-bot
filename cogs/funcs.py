@@ -9,4 +9,4 @@ async def lastMessage(ctx, users_id: int):
             oldestMessage = fetchMessage
 
     if (oldestMessage is not None):
-        return oldestMessage.content
+        return oldestMessage.content 
