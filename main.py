@@ -191,6 +191,7 @@ async def reload(ctx, mod=None):
         bot.reload_extension('cogs.'+mod)
         await ctx.send(":repeat: Reloaded "+mod)
       except Exception as e:
+        await ctx.message.add_reaction("exclamation")
         await ctx.author.send(f"Unable to load {mod}: \n{e}")    
 
 
