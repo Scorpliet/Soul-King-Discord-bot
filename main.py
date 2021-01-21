@@ -174,22 +174,24 @@ async def edit_msg_after(msg, content, delay):
      await msg.edit(content=content)
 
 
-@bot.command
+@bot.command()
 @commands.check(bot_owner)
 async def reload(ctx, mod=None):
     modules = ["game","helpmod","music","chat"]
-    bot.load_extension("jishaku")   
+    bot.reload_extension("jishaku")   
     if mod==None:
       try:
         for module in modules:
-            bot.load_extension('cogs.'+module)
+            bot.reload_extension('cogs.'+module)
       except Exception as e:
         await ctx.author.send(f"Unable to load {module}: \n{e}")      
       await ctx.send(":repeat: Reloaded all extensions")
     else:
-       bot.load_extension('cogs.'+module)
-       await ctx.send("Reloaded"+module)
-
+      try:
+        bot.reload_extension('cogs.'+mod)
+        await ctx.send(":repeat: Reloaded "+mod)
+      except Exception as e:
+        await ctx.author.send(f"Unable to load {mod}: \n{e}")    
 
 
 @loadmem.error
