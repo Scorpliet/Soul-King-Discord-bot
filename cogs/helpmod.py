@@ -18,7 +18,8 @@ command_name={"join":"Joins a voice channel",
 "wordguess":"think of a word and the bot will guess it based on your input", 
 "do":"requires an helping verb arg (do, does, will, should, are, is, has, have + you/I + anything) \n```example: brook should I go to sleep``` \n```brook does @EpicUser cry when he sleeps```" ,
 "see my pants":"brook sends a an embeded image with reaction",
-"45": "brook sends a random 45 degree embed, an inside joke"}
+"45": "brook sends a random 45 degree embed, an inside joke",
+"cookie": "Get the cookie and rate and beat your time"}
 
 cmd_aliase={ 
 "summon":"", 
@@ -33,7 +34,8 @@ cmd_aliase={
 "stop":"stop", 
 "leave":"'disconnect', 'dis'", 
 "loop":"'l', 'repeeat'", 
-"wordguess":"'word', 'guess'", 
+"wordguess":"'word', 'guess'",
+"cookie":"'sushi', 'taco', 'burrito', 'c'" 
 }
 
 

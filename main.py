@@ -21,6 +21,7 @@ intents=discord.Intents.all()
 
 FFMPEG_PATH = '/home/runner/dsbottsk2/node_modules/ffmpeg-static/ffmpeg'
 discord.opus.load_opus("./libopus.so.0.8.0")
+client = discord.Client()
 bot = commands.Bot(
   command_prefix=('brook ', "."), 
   case_insensitive=True,
@@ -125,6 +126,8 @@ async def on_message(message):
         #"https://i.pinimg.com/originals/cc/7e/e9/cc7ee92ea65e30f45482f8f2199ec69b.jpg")
         embed.set_image(url=random.choice(Images))
         await message.channel.send(embed=embed)
+    elif message.content == "<@792706012267675669>":
+         await message.channel.send("You can call me `Brook` or summon me by `.`")    
 
 
 @bot.command(name="see")

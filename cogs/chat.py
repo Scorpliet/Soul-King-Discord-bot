@@ -38,10 +38,11 @@ class chatbot(commands.Cog):
     message = await lastMessage(ctx, ctx.author.id)
     word = message.split()[1] 
     member = discord.utils.get(ctx.guild.members, name=arg1)
-    print(member)
     if arg1=="you" or arg1=="u":
         if word=="are":
-            word="am"  
+            word="am"
+        elif word=="will":
+           word = "would"      
         response = [f"Oh yes! I {word} ", f"Yohohoho! I {word} ", f"I {word} ", f"No I {word}n't "]
         randomres = random.choice(response)
         if randomres == response[2]:
@@ -63,9 +64,8 @@ class chatbot(commands.Cog):
         "https://i.pinimg.com/originals/ed/d5/36/edd536243dab449c0cd7c9d483d36b89.jpg",
         "https://pbs.twimg.com/media/EXnqC26XQAYFUbO.jpg",
         "https://i.ytimg.com/vi/uGJpB_PF_2s/maxresdefault.jpg",
-        "https://i.ytimg.com/vi/Ho14w9MRjw0/maxresdefault.jpg",
         "https://media1.tenor.com/images/22b95af3a67e2af80fd098e2512dce73/tenor.gif?itemid=15220851"
-         ]
+         ,"https://thumbs.gfycat.com/IdolizedFlimsyBluetonguelizard-small.gif"]
         embed = discord.Embed(title="45 Degrees!")
         #embed.set_author(
         #name="Brook",
@@ -73,28 +73,24 @@ class chatbot(commands.Cog):
         #"https://i.pinimg.com/originals/cc/7e/e9/cc7ee92ea65e30f45482f8f2199ec69b.jpg")
         embed.set_image(url=random.choice(Images))
         await ctx.send(embed=embed)
-    elif member is not None:
-        resp=[f"{member.name} {word} "]
+    elif arg1 == discord.Member:
+        resp=[f"{arg1} {word} "]
         await ctx.send(random.choice(resp)+ "{}".format(seperator.join(args)))   
     else:
-      resp=[f"No I cannot do that", "I wont", f"I'll die {word} that, wait I'm already dead Yohohoho!", "No",f"{word} you want me to die? Oh wait I'm already dead Yohohoho!"]
+      resp=["No I cannot do that", "I wont", f"I'll die {word}ing that, wait I'm already dead Yohohoho!", "No",f"{word} you want me to die? Oh wait I'm already dead Yohohoho!"]
       await ctx.send(random.choice(resp))
 
   @commands.command(name="does", aliases=["is", "has"])
-  async def does(self, ctx, user: str, *args):
+  async def does(self, ctx, user, *args):
     message = await lastMessage(ctx, ctx.author.id)
-    if str is discord.Member:
-       word = message.split()[1]
-       response=[f"{discord.Member.name} {word} ", f"{discord.Member.name} definitely {word} ", f"{discord.Member.name} {word}n't ", f"How should I know if {discord.Member.name} {word} ", f"Yes I can confirm, {discord.Member.name} "]
-       await ctx.send(
-        random.choice(response) + "{}".format(seperator.join(args)))
-    else:
-      cmd = message.split()[1]
-      word = message.split()[2]
-      response=[f"{word} ", f"{word} definitely {cmd} ", f"{word} {cmd}n't ", f"How should I know if {word} {cmd} ", f"Yes I can confirm {word} {cmd} "]
-      await ctx.send(
-        random.choice(response) + "{}".format(seperator.join(args)))
+    word = message.split()[1]
+    response=[f"{user} {word} ", f"{user} definitely {word} ", f"{user} {word}n't ", f"How should I know if {user} {word} ", f"Yes I can confirm, {user} "]
+    await ctx.send(random.choice(response) + "{}".format(seperator.join(args)))
   
-
+  
+  
 def setup(bot):
    bot.add_cog(chatbot(bot))     
+
+
+

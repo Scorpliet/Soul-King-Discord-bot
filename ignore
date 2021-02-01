@@ -2,7 +2,8 @@
 #intents.members = True
 #bot.remove_command('help')  #removed the default help function
 
-
+.add_field(name='<:time:804063156259258368> Duration', value=self.source.duration, inline = True)
+                 .add_field(name='<:user:804063696799662101> Requested by', value=self.requester.mention, inline = True)
 
 #@bot.command()
 #async def help(ctx):
@@ -79,3 +80,19 @@ async def trydoes(ctx, user: discord.Member, *args):
      word = message.split()[2]
      response=[f"{word} does ", f"{word} definitely does ", f"{word} doesn't ", f"How should I know if {word} does ", f"Yes I saw {word} "] 
      await ctx.send(random.choice(response) + "{}".format(seperator.join(args)))
+  @does.error  
+  async def does_error(ctx, error, *args):  
+    if isinstance(error, commands.TypeError):
+      message = await lastMessage(ctx, ctx.author.id)
+      print(message)
+      
+      word = message.split()[2]
+      print(cmd + word)
+      #args = seperator.join(message.split()[3:-1])
+      response=[f"{word} ", f"{word} definitely {cmd} ", f"{word} {cmd}n't ", f"How should I know if {word} {cmd} ", f"Yes I can confirm {word} {cmd} "]
+      await ctx.send(
+        random.choice(response) + "{}".format(seperator.join(args)))
+
+
+<a:yes:804728757029306418>
+<a:no:804728757007941702>
