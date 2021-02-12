@@ -8,9 +8,9 @@ import os
 from keep_alive import keep_alive
 from random import randrange
 from embedss import help_em
-import asyncio
+from cogs.funcs import edit_msg_after, bot_owner
 token = os.environ.get("TOKEN")
-import typing
+
 # TO DOWNLOAD FFMPEG:
 # ctrl+shift+s
 # npm install ffmpeg-static
@@ -24,12 +24,12 @@ discord.opus.load_opus("./libopus.so.0.8.0")
 client = discord.Client()
 bot = commands.Bot(
   command_prefix=('brook ', "."), 
-  case_insensitive=True,
+  case_insensitive=False,
   intents=intents,
   #chunk_guilds_at_startup=False,
   description="A Strawhat who has joined your guild",
   activity=discord.Game("Binks Sake"))
-bot.remove_command('help')
+#
 
 
 presponses=["Can you show me your panties ",
@@ -60,16 +60,15 @@ async def on_ready():
 
     #bot.kclient = ksoftapi.Client(os.environ['KToken'])
     #bot.client = ClientSession()
-    modules = ["game","helpmod","music","chat"]
-    try:
-        for module in modules:
-            bot.load_extension('cogs.'+module)
-            print('Loaded: ' + module)
-        bot.load_extension("jishaku")
-        print("Loaded jishaku")    
-    except Exception as e:
+    modules = ["game","helpmod","music","chat", "admin","error_handle","image", "mal"]
+    for module in modules:
+      try:
+        bot.load_extension('cogs.'+module)
+        print('Loaded: ' + module)
+      except Exception as e:
         print(f'Error loading {module}: {e}')
-
+    bot.load_extension("jishaku")
+    print("Loaded jishaku")
     print('Im ready')
 
 text = "here"
@@ -93,12 +92,11 @@ async def on_guild_join(guild):
 
 @bot.event
 async def on_message(message):
-    message.content = message.content.lower()
     if message.author == bot.user:
         return
     await bot.process_commands(message)  #This line makes sure on_message wont take priority over a command function
     pchance=randrange(8)
-    if message.content.startswith(("hello brook", "hello soulking", "hi brook", "hey brook")):
+    if message.content.lower().lower().startswith(("hello brook", "hello soulking", "hi brook", "hey brook")):
         randomliststart = [
             "Yohohoohoohoo! Hello, ", "Konnichiwa, ",
             "https://pa1.narvii.com/6280/3b9059c399eadd18056b566e13e34a364fda337e_hq.gif",
@@ -115,7 +113,7 @@ async def on_message(message):
             await message.channel.send(response + message.author.name +random.choice(randomlistend))
             if pchance==4:
                await message.channel.send(random.choice(presponses)+random.choice(pemojies))
-    elif message.content.startswith(("brook see my pants",".see my pants", "brook see my panties")):
+    elif message.content.lower().startswith(("brook see my pants",".see my pants", "brook see my panties")):
         Images = [
         "https://24.media.tumblr.com/d7b5d85b4e1ed9e9e8022e9f728eff63/tumblr_mtaaqhnXxa1rf3uloo1_400.gif",
         "https://pa1.narvii.com/6331/7e3067290368f17896cf42b4a300870feb4a8fc8_00.gif" ]
@@ -126,8 +124,8 @@ async def on_message(message):
         #"https://i.pinimg.com/originals/cc/7e/e9/cc7ee92ea65e30f45482f8f2199ec69b.jpg")
         embed.set_image(url=random.choice(Images))
         await message.channel.send(embed=embed)
-    elif message.content == "<@792706012267675669>":
-         await message.channel.send("You can call me `Brook` or summon me by `.`")    
+    elif message.content=="<@792706012267675669>":
+         await message.channel.send("Call me Brook")    
 
 
 @bot.command(name="see")
@@ -154,9 +152,6 @@ async def brook45(ctx):
     if pchance==4:
            await ctx.send(random.choice(presponses) + random.choice(pemojies))
 
-def bot_owner(ctx):
-    return ctx.message.author.id == 395230256828645376
-
 @bot.command(aliases=["fetch"])
 @commands.check(bot_owner)
 @commands.bot_has_guild_permissions(manage_messages=True)
@@ -171,31 +166,6 @@ async def loadmem(ctx):
   else:
      await ctx.author.send("Members already loaded") 
 
-
-async def edit_msg_after(msg, content, delay):
-     await asyncio.sleep(delay)
-     await msg.edit(content=content)
-
-
-@bot.command()
-@commands.check(bot_owner)
-async def reload(ctx, mod=None):
-    modules = ["game","helpmod","music","chat"]
-    bot.reload_extension("jishaku")   
-    if mod==None:
-      try:
-        for module in modules:
-            bot.reload_extension('cogs.'+module)
-      except Exception as e:
-        await ctx.author.send(f"Unable to load {module}: \n{e}")      
-      await ctx.send(":repeat: Reloaded all extensions")
-    else:
-      try:
-        bot.reload_extension('cogs.'+mod)
-        await ctx.send(":repeat: Reloaded "+mod)
-      except Exception as e:
-        await ctx.message.add_reaction("exclamation")
-        await ctx.author.send(f"Unable to load {mod}: \n{e}")    
 
 
 @loadmem.error

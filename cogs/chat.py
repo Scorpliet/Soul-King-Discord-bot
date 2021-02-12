@@ -33,7 +33,7 @@ class chatbot(commands.Cog):
   
   @commands.command(name="do", aliases=["should", "will", "are", "have", "would"])
   async def do(self,ctx, arg1, *args):
-    """do a 45, do you anything, do I anything """
+    """requires an helping verb arg (do, does, will, should, are, is, has, have + you/I + anything) \n`example: brook should I go to sleep`\n`brook does @EpicUser cry when he sleeps`"""
     pchance=randrange(8)
     message = await lastMessage(ctx, ctx.author.id)
     word = message.split()[1] 
@@ -82,6 +82,7 @@ class chatbot(commands.Cog):
 
   @commands.command(name="does", aliases=["is", "has"])
   async def does(self, ctx, user, *args):
+    """requires an helping verb arg (do, does, will, should, are, is, has, have + you/I + anything) \n`example: brook should I go to sleep`\n`brook does @EpicUser cry when he sleeps`"""
     message = await lastMessage(ctx, ctx.author.id)
     word = message.split()[1]
     response=[f"{user} {word} ", f"{user} definitely {word} ", f"{user} {word}n't ", f"How should I know if {user} {word} ", f"Yes I can confirm, {user} "]
