@@ -1,9 +1,12 @@
 import json
 import discord
 import typing
-ranks = ["Recruit", "Initiate", "Novice", "Apprentice","Adept"]
+ranks = ["Recruit", "Initiate", "Novice", "Apprentice","Adept","Warlord","Yonkou",]
 amount = [0,50,100,200,300,400]
-  
+mainshop = [{"name":"Watch","price":100,"description":"Time"},
+            {"name":"Laptop","price":1000,"description":"Work"},
+            {"name":"PC","price":10000,"description":"Gaming"}]
+
 #async def savepoints():
    #with open("data.json", "w") as f:
      #return users=json.dump(users, f)
@@ -40,7 +43,7 @@ async def balpoints(ctx):
   valor_rank = users[str(user.id)]["rank"]
   embed = discord.Embed(title=f"{user.name}'s profile")
   embed.set_thumbnail(url=user.avatar_url)
-  embed.add_field(name="```Berries```", value=point_amt)
+  embed.add_field(name="```Berries``` <:Berri:807667003401830400>", value=point_amt)
   embed.add_field(name="```Bounty```", value=valor_amt, inline=True)
   embed.add_field(name="```Rank```", value=valor_rank, inline=True)
   await ctx.send(embed=embed)

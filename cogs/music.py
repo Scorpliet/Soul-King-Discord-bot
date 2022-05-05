@@ -117,6 +117,19 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
 
+    @classmethod
+    async def regather_stream(cls, data, *, loop):
+        """Used for preparing a stream, instead of downloading.
+        Since Youtube Streaming links expire."""
+        loop = loop or asyncio.get_event_loop()
+        requester = data['requester']
+
+        to_run = functools.partial(cls.ytdl.extract_info, url=data['webpage_url'], download=False)
+        data = await loop.run_in_executor(None, to_run)
+
+        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
+
+
     @staticmethod
     def parse_duration(duration: int):
         minutes, seconds = divmod(duration, 60)
@@ -235,7 +248,15 @@ class VoiceState:
                     self.bot.loop.create_task(self.stop())
                     self.exists= False
                     return
-
+                #if not isinstance(self.current, YTDLSource):
+                # Source was probably a stream (not downloaded)
+                # So we should regather to prevent stream expiration
+                  #try:
+                    #self.current = await YTDLSource.regather_stream(self.current, loop=self.bot.loop)
+                  #except Exception as e:
+                    #await self._channel.send(f':notes: There was an error processing your song.\n'
+                                             #f'```css\n[{e}]\n```')
+                   # continue
                 self.current.source.volume = self._volume
                 self.voice.play(self.current.source, after=self.play_next_song)
                 await self.current.source.channel.send(embed=self.current.create_embed())
@@ -517,7 +538,7 @@ class music(commands.Cog):
       if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
                  
-      if "playlist?list=" in search or "&list=" in search:
+      if "playlist?list=" in search or "&list=" in search and "&index" not in search:
         query = parse_qs(urlparse(search).query, keep_blank_values=True)
         playlist_id = query["list"][0]
         youtube = googleapiclient.discovery.build("youtube", "v3", developerKey = token)
@@ -554,7 +575,10 @@ class music(commands.Cog):
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-            except YTDLError as e:
+            except Exception as e:
+                #youtube = googleapiclient.discovery.build("youtube", "v3", developerKey = token)
+                #req=youtube.search().list(q=search, part="snippet")
+                #res=req.execute()
                 await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
             else:
                 song = Song(source)

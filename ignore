@@ -5,6 +5,24 @@
 .add_field(name='<:time:804063156259258368> Duration', value=self.source.duration, inline = True)
                  .add_field(name='<:user:804063696799662101> Requested by', value=self.requester.mention, inline = True)
 
+
+@bot.event
+async def on_guild_join(guild):
+    helpem = help_em.helpem
+    system_channel = guild.system_channel
+    for channel in guild.text_channels:
+        if channel.permissions_for(guild.me).send_messages:
+            await system_channel.send(embed=helpem)
+            #await channel.send('Hey there! Thank you for adding me!\nMy prefix is `~`\nStart by typing `~help`')
+            break
+
+
+
+
+
+
+
+
 #@bot.command()
 #async def help(ctx):
 #    embed = discord.Embed(

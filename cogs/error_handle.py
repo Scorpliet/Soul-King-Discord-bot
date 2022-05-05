@@ -92,7 +92,7 @@ class ErrorHandling(commands.Cog):
             await ctx.send(error)
 
         elif isinstance(error, commands.MaxConcurrencyReached):
-            await ctx.send(f"The `{ctx.command}` command is limited to `{error.number}` {'use' if error.number == 1 else 'uses'} per `{error.per.name}` at a time.")
+            await ctx.send(f"`{ctx.command}` command is limited to {error.number} {'use' if error.number == 1 else 'uses'} per {error.per.name} at a time.")
 
         elif isinstance(error, commands.CheckFailure):
             pass
